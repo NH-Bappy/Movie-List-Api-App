@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const {prisma , connectDB , disconnectDB} = require('../src/config/db')
 const movieRoutes = require('./routes/routeMovie');
-
+const authRoutes = require('./routes/authRoutes')
 const app = express();
 
 
@@ -12,7 +12,7 @@ const app = express();
 
 //Api routs
 app.use("/cinema" , movieRoutes);
-
+app.use("/auth" , authRoutes);
 
 connectDB()
 
