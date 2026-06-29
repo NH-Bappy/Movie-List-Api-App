@@ -1,8 +1,8 @@
 
 
 
-const registration = async(req,res) => {
-    res.json({message : auth})
+const registration = async (req,res) => {
+    res.json({message : "auth"})
 }
 
 
