@@ -18,8 +18,11 @@ model User {
   name String
   email String @unique
   password String
-
   createdAt DateTime @default(now())
+
+  //relation
+  movies Movie[] @relation("MovieCreator")
+  watchListItem WatchListItem[]
 }
 
 model Movie {
@@ -32,8 +35,36 @@ model Movie {
   posteUrl String?
   createdBy String
   createdAt DateTime @default(now())
+
+
+  //relation
+  creator User @relation("MovieCreator" , fields: [createdBy] , references: [id] ,onDelete: Cascade)
+  watchListItem WatchListItem[]
 }
 
+model WatchListItem {
+  id String @id @default(uuid())
+  userId String
+  movieId String
+  status WatchListStatus @default(PLANNED)
+  rating Int?
+  notes String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+
+  //Relation
+  user User @relation(fields: [userId], references: [id] , onDelete: Cascade)
+  movie Movie @relation(fields: [movieId], references: [id] , onDelete: Cascade)
+}
+
+
+enum WatchListStatus {
+  PLANNED
+  WATCHING
+  COMPLETE
+  DROPPED
+}
 
 
 //User -> movie -> watchList
