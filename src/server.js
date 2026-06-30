@@ -7,6 +7,14 @@ const app = express();
 
 
 
+// body parsing middleware to except json data from body
+app.use(express.json())
+// body parsing middleware to except json data from html of front-end
+app.use(express.urlencoded({ extended: true }))
+
+
+
+
 
 
 
