@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs')
 
 
 const registration = async (req,res) => {
-
     try {
     const { name , email , password } = req.body;
     
@@ -54,11 +53,55 @@ const registration = async (req,res) => {
         },
     });
     } catch (error) {
-    console.error("Error in registration:", error);
-    return res.status(500).json({ error: "Internal server error" });
+        console.error("Error in registration:", error);
+        return res.status(500).json({ error: "Internal server error" });
     }
 
-};
+}
 
 
-module.exports = {registration};
+    //login 
+const login = async (req , res) => {
+    try {
+        const { email , password} = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ error: "All fields are required" });
+            }
+
+        const normalizedEmail = email.toLowerCase();
+
+        //check is user exit or not
+        const user = await prisma.user.findUnique({
+            where : {email : normalizedEmail},
+        });
+
+        if(!user){
+            return res.status(404).json({error: "Invalid email or password"});
+        };
+
+        //verify password
+        const isPasswordValid =  await bcrypt.compare(password , user.password);
+        if(!isPasswordValid) return res.status(401).json({error: "Invalid email or password"});
+
+
+        // generate JWT token
+
+
+    res.status(201).json({
+        status: "success" ,
+        data: {
+            user: {
+                id: user.id,
+                email: user.email,
+            },
+        },
+    });
+    
+    } catch (error) {
+            console.log("Error in login:", error)
+            return res.status(500).json({ error: "Internal server error" });
+        }
+}
+
+module.exports = {registration , login};
