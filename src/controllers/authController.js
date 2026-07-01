@@ -1,5 +1,6 @@
 const { prisma } = require('../config/db')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const { generateToken } = require('../utils/generateToken');
 
 
 
@@ -37,12 +38,16 @@ const registration = async (req,res) => {
     const user = await prisma.user.create({
         data: {
             name, 
-            email,
+            email: normalizedEmail,
             password : hashPassword ,
         },
     });
+
+    // generate JWT token
+    const token = generateToken(user.id , res)
+
     // successful message
-    res.status(201).json({
+    res.status(200).json({
         status: "success" ,
         data: {
             user: {
@@ -50,6 +55,7 @@ const registration = async (req,res) => {
                 name: user.name,
                 email: user.email,
             },
+            token,
         },
     });
     } catch (error) {
@@ -86,7 +92,7 @@ const login = async (req , res) => {
 
 
         // generate JWT token
-
+    const token = generateToken(user.id , res)
 
     res.status(201).json({
         status: "success" ,
@@ -95,6 +101,7 @@ const login = async (req , res) => {
                 id: user.id,
                 email: user.email,
             },
+            token,
         },
     });
     
