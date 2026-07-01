@@ -111,4 +111,24 @@ const login = async (req , res) => {
         }
 }
 
-module.exports = {registration , login};
+//logout
+const logout = async (req , res) => {
+
+    // clear cookie
+res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+});
+
+res.status(200).json({
+    status: "successful",
+    message: "logged out successfully"
+})
+}
+
+
+
+module.exports = {registration , login , logout};
