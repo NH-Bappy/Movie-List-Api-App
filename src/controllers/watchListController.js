@@ -9,7 +9,10 @@ const addToWatchList = async (req , res) => {
     const movie = await prisma.movie.findUnique({
         where: {id : movieId},
     });
-    if(!movie) res.status(404).json({error: "movie not found"});
+    
+    if (!movie) {
+    return res.status(404).json({ error: "movie not found" });
+    }
 
     // check if already exists
     const alreadyExists = await prisma.watchListItem.findUnique({
@@ -18,7 +21,10 @@ const addToWatchList = async (req , res) => {
             movieId: movieId,
         }},
     });
-    if(alreadyExists) res.status(400).json({message: "movie already in watch list"});
+
+    if (alreadyExists) {
+    return res.status(400).json({ message: "movie already in watch list" });
+    }
 
 //create watch list item
     const addMovie = await prisma.watchListItem.create({
